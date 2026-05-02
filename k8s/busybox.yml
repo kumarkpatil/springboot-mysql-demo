@@ -1,0 +1,40 @@
+kind: Deployment 
+apiVersion: apps/v1
+
+metadata:
+  name: busybox-deployment
+  labels:
+    app: busybox-app
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox-app
+  template:
+    metadata:
+      labels:
+        app: busybox-app
+    spec:
+      containers:
+        - image:  busybox
+          name: busybox
+          command: ["sh", "-c", "echo env  && sleep 3600"]
+          env:  
+            - name:  MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MYSQL_ROOT_PASSWORD
+
+          ports:
+          - containerPort: 3306
+
+          resources:
+            limits:
+              cpu: "1"
+              memory: "750Mi"
+            requests:
+              cpu: "0.75"
+              memory: "500Mi"
+

@@ -1,0 +1,47 @@
+kind: Deployment 
+apiVersion: apps/v1
+
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql-app
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-app
+  template:
+    metadata:
+      labels:
+        app: mysql-app
+    spec:
+      containers:
+        - image:  mysql:8
+          name: mysql
+          env:
+            - name:  MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name:  MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MYSQL_DATABASE
+          ports:
+          - containerPort: 3306
+
+          resources:
+            limits:
+              cpu: "1"
+              memory: "750Mi"
+            requests:
+              cpu: "0.75"
+              memory: "500Mi"
+
+
+
+# Validate above depoyment file, and check why secret is not working, and fix it. Secret is created correctly, but the deployment is not able to read it.
+# namespace is also same for both secret and deployment.
