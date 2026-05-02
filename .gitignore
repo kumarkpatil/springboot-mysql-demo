@@ -2,8 +2,6 @@
 .idea/
 *.iml
 
-# Maven wrapper
-.mvn/
 
 # Build output
 target/
